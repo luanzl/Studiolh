@@ -1,2 +1,0 @@
-# Studiolh
-Gestão 
