@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Studio LH • Gestão Profissional de Tatuagem</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f172a">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo-badge">💲</div>
+      <div>
+        <h1 class="brand">Studio <strong>LH</strong></h1>
+        <p class="subtitle">Gestão Profissional de Tatuagem</p>
+      </div>
+      <div class="totals" id="topTotals">
+        <div><small>Saldo Total</small><h3 id="saldoTopo">R$ 0,00</h3></div>
+        <div id="userBox" class="userbox hidden">
+          <small>Usuário</small>
+          <div class="userbox-row">
+            <span id="userRole">—</span>
+            <button id="btnSair" class="btn danger sm">Sair</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- LOGIN / PERFIS -->
+    <section id="loginCard" class="card">
+      <h2>Selecionar Usuário</h2>
+      <label class="label">Perfil</label>
+      <select id="selPerfil" class="input">
+        <option value="">Escolha seu perfil</option>
+      </select>
+
+      <label class="label">Senha do Perfil (se houver)</label>
+      <input id="senhaLogin" type="password" class="input" placeholder="Digite a senha do perfil" />
+
+      <button id="btnEntrar" class="btn primary">Entrar no Sistema</button>
+
+      <hr class="divider">
+
+      <h2>Adicionar Funcionário</h2>
+      <label class="label">Nome do Funcionário</label>
+      <input id="novoFuncionarioNome" class="input" placeholder="Nome completo" />
+      <label class="label">Senha Inicial (opcional)</label>
+      <input id="novoFuncionarioSenha" class="input" placeholder="Senha para o funcionário" />
+      <button id="btnAddFuncionario" class="btn success">
+        <span class="ico">＋</span> Adicionar Funcionário
+      </button>
+      <p class="muted sm">Cada funcionário tem um banco separado com sua própria senha.</p>
+    </section>
+
+    <!-- NAV -->
+    <nav id="nav" class="tabs hidden">
+      <button data-tab="agenda"  class="tab active">📅 Agenda</button>
+      <button data-tab="financeiro" class="tab">💰 Financeiro</button>
+      <button data-tab="clientes" class="tab">👥 Clientes</button>
+      <button data-tab="anamnese" class="tab">📋 Anamnese</button>
+      <button data-tab="admin" class="tab">⚙️ Admin</button>
+      <button data-tab="config" class="tab">🛠️ Config</button>
+      <button data-tab="usuarios" class="tab">👥👥 Usuários</button>
+    </nav>
+
+    <!-- AGENDA -->
+    <section id="tab-agenda" class="card tabpane show">
+      <h2>Novo Agendamento</h2>
+
+      <label class="label">Cliente</label>
+      <select id="agCliente" class="input"></select>
+
+      <label class="label">Serviço</label>
+      <input id="agServico" class="input" placeholder="Ex: Tatuagem realista" />
+
+      <div class="row">
+        <div class="col">
+          <label class="label">Data</label>
+          <input id="agData" type="date" class="input" />
+        </div>
+        <div class="col">
+          <label class="label">Hora</label>
+          <input id="agHora" type="time" class="input" />
+        </div>
+      </div>
+
+      <label class="label">Valor (R$)</label>
+      <input id="agValor" class="input" inputmode="decimal" value="0,00" />
+
+      <div class="row">
+        <div class="col">
+          <label class="label">Status</label>
+          <select id="agStatus" class="input">
+            <option value="agendado">Agendado</option>
+            <option value="concluido">Concluído</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div class="col">
+          <label class="label">Imagem (opcional)</label>
+          <input id="agImagem" type="file" accept="image/*" class="input" />
+        </div>
+      </div>
+
+      <div id="agPreview" class="image-preview hidden"></div>
+
+      <label class="label">Observações</label>
+      <textarea id="agObs" class="input" placeholder="Observações adicionais..."></textarea>
+
+      <button id="btnAgendar" class="btn primary">Agendar Serviço</button>
+
+      <hr class="divider">
+      <h2>Agenda</h2>
+      <input id="buscaAgenda" class="input" placeholder="Buscar por cliente/serviço..." />
+      <div id="listaAgenda" class="list"></div>
+    </section>
+
+    <!-- FINANCEIRO -->
+    <section id="tab-financeiro" class="card tabpane">
+      <div class="grid3">
+        <div class="kpi green"><small>Receitas</small><strong id="kpiReceitas">R$ 0,00</strong><button id="openReceita" class="fab">＋</button></div>
+        <div class="kpi red"><small>Despesas</small><strong id="kpiDespesas">R$ 0,00</strong><button id="openDespesa" class="fab">－</button></div>
+        <div class="kpi blue"><small>Saldo</small><strong id="kpiSaldo">R$ 0,00</strong><button id="openResumo" class="fab">$</button></div>
+      </div>
+
+      <div id="formTransacao" class="sheet hidden">
+        <h3>Nova Transação</h3>
+        <label class="label">Tipo</label>
+        <select id="txTipo" class="input">
+          <option value="receita">Receita</option>
+          <option value="despesa">Despesa</option>
+        </select>
+        <label class="label">Descrição</label>
+        <input id="txDesc" class="input" placeholder="Ex: Pagamento de cliente / Compra de insumos" />
+        <label class="label">Valor (R$)</label>
+        <input id="txValor" class="input" inputmode="decimal" value="0,00" />
+        <label class="label">Data</label>
+        <input id="txData" type="date" class="input" />
+        <label class="label">Categoria</label>
+        <select id="txCat" class="input">
+          <option>Serviços</option><option>Produtos</option><option>Insumos</option><option>Comissão</option><option>Outros</option>
+        </select>
+        <button id="btnAddTx" class="btn success">Adicionar Transação</button>
+        <button id="btnCloseTx" class="btn ghost">Fechar</button>
+      </div>
+
+      <hr class="divider">
+      <h2>Lançamentos</h2>
+      <input id="buscaTx" class="input" placeholder="Buscar lançamentos..." />
+      <div id="listaTx" class="list"></div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section id="tab-clientes" class="card tabpane">
+      <h2>Novo Cliente</h2>
+      <label class="label">Nome Completo</label>
+      <input id="clNome" class="input" placeholder="Nome do cliente" />
+      <label class="label">Email</label>
+      <input id="clEmail" class="input" placeholder="email@exemplo.com" />
+      <label class="label">WhatsApp</label>
+      <input id="clZap" class="input" placeholder="(11) 99999-9999" />
+      <label class="label">Endereço</label>
+      <textarea id="clEnd" class="input" placeholder="Endereço completo"></textarea>
+      <button id="btnAddCliente" class="btn violet">Cadastrar Cliente</button>
+
+      <hr class="divider">
+      <div class="row">
+        <h2 class="flex1">Clientes Cadastrados</h2>
+        <input id="buscaCliente" class="input" placeholder="Buscar cliente..." />
+      </div>
+      <div id="listaClientes" class="list"></div>
+    </section>
+
+    <!-- ANAMNESE -->
+    <section id="tab-anamnese" class="card tabpane">
+      <h2>Modelos de Anamnese</h2>
+      <div class="modelos">
+        <button class="btn model azul" data-modelo="basico">📝 Modelo Básico</button>
+        <button class="btn model roxo" data-modelo="completo">📄 Modelo Completo</button>
+        <button class="btn model verde" data-modelo="detalhado">📊 Modelo Detalhado</button>
+      </div>
+
+      <h2>Nova Anamnese</h2>
+      <label class="label">Cliente</label>
+      <select id="anCliente" class="input"></select>
+      <div id="anCampos" class="an-grid"></div>
+      <button id="btnSalvarAn" class="btn primary">Salvar Anamnese</button>
+
+      <hr class="divider">
+      <h2>Anamneses Realizadas</h2>
+      <input id="buscaAn" class="input" placeholder="Buscar por cliente..." />
+      <div id="listaAn" class="list"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="tab-admin" class="card tabpane">
+      <h2>Banco de Dados</h2>
+      <div class="db-status box">
+        <p id="dbFlag" class="flag ok">✅ Dados salvos permanentemente no dispositivo</p>
+        <p class="muted sm">Última atualização: <span id="dbUltima">—</span></p>
+        <p class="muted sm">Auto-save ativo • Backup triplo • Recuperação automática</p>
+      </div>
+
+      <div class="row" style="gap:10px;flex-wrap:wrap">
+        <button id="btnExportar" class="btn primary">🖼️ Exportar</button>
+        <label class="btn success filebtn">📥 Importar
+          <input type="file" id="fileImport" accept="application/json" hidden>
+        </label>
+        <button id="btnBackup" class="btn violet">💾 Backup Manual</button>
+        <button id="btnRecuperar" class="btn ghost">🔄 Recuperar Dados</button>
+      </div>
+
+      <div class="sheet">
+        <h3>Status do Banco</h3>
+        <div class="stats-grid">
+          <div><small>Tamanho dos dados</small><strong id="stTam">0 KB</strong></div>
+          <div><small>Registros totais</small><strong id="stRegs">0</strong></div>
+          <div><small>Backups disponíveis</small><strong id="stBkp">0</strong></div>
+          <div><small>Status de segurança</small><strong id="stSeg">Desprotegido</strong></div>
+        </div>
+        <h4>Backups Automáticos</h4>
+        <div id="listaBackups" class="list"></div>
+      </div>
+
+      <hr class="divider">
+
+      <h2>Estatísticas do Sistema</h2>
+      <div class="stats-grid">
+        <div class="kpi blue"><small>Total de Clientes</small><strong id="stClientes">0</strong></div>
+        <div class="kpi green"><small>Agendamentos Hoje</small><strong id="stHoje">0</strong></div>
+        <div class="kpi violet"><small>Receita do Mês</small><strong id="stMes">R$ 0,00</strong></div>
+        <div class="kpi orange"><small>Transações Totais</small><strong id="stTx">0</strong></div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section id="tab-config" class="card tabpane">
+      <h2>Configurações Gerais</h2>
+      <label class="label">Nome do Estúdio</label>
+      <input id="cfgEstudio" class="input" placeholder="Studio LH" />
+      <label class="label">Moeda</label>
+      <select id="cfgMoeda" class="input">
+        <option value="BRL">BRL</option><option value="USD">USD</option><option value="EUR">EUR</option>
+      </select>
+      <label class="label">Tema</label>
+      <select id="cfgTema" class="input"><option value="dark">Dark</option><option value="light">Light</option></select>
+
+      <hr class="divider">
+
+      <h2>Notificações WhatsApp</h2>
+      <label class="check"><input type="checkbox" id="cfgWpp24"> Lembrete 24h antes</label>
+      <label class="check"><input type="checkbox" id="cfgWpp2"> Lembrete 2h antes</label>
+      <label class="check"><input type="checkbox" id="cfgAutoBackup"> Auto-backup diário</label>
+      <label class="label">Mensagem de lembrete</label>
+      <textarea id="cfgMsgWpp" class="input" placeholder="Olá, lembrando do seu horário amanhã às 14h!"></textarea>
+      <button id="btnSalvarCfg" class="btn success">Salvar Configurações</button>
+
+      <hr class="divider">
+
+      <h2>Cores dos Agendamentos</h2>
+      <div class="row">
+        <div class="col">
+          <label class="label">Agendado</label>
+          <input id="corAg" type="color" class="input" value="#3b82f6">
+        </div>
+        <div class="col">
+          <label class="label">Concluído</label>
+          <input id="corCo" type="color" class="input" value="#22c55e">
+        </div>
+        <div class="col">
+          <label class="label">Cancelado</label>
+          <input id="corCa" type="color" class="input" value="#ef4444">
+        </div>
+      </div>
+      <button id="btnSalvarCores" class="btn violet">🎨 Salvar Cores</button>
+
+      <hr class="divider">
+
+      <h2>Ações do Sistema</h2>
+      <div class="row" style="gap:10px;flex-wrap:wrap">
+        <button id="btnLimparCache" class="btn orange">🧹 Limpar Cache</button>
+        <button id="btnResetApp" class="btn danger">🔁 Resetar Aplicativo</button>
+        <button id="btnTestar" class="btn violet">🔗 Testar Conexão</button>
+        <button id="btnRelatorio" class="btn primary">📊 Exportar Relatório</button>
+      </div>
+
+      <hr class="divider">
+
+      <h2>Segurança</h2>
+      <div id="warnSenha" class="alert">⚠️ Nenhuma senha configurada. Configure uma senha para proteger seus dados.</div>
+      <label class="label">Senha Atual (se configurada)</label>
+      <input id="segAtual" type="password" class="input" placeholder="Digite a senha atual" />
+      <label class="label">Nova Senha</label>
+      <input id="segNova" type="password" class="input" placeholder="Digite a nova senha" />
+      <label class="label">Confirmar Nova Senha</label>
+      <input id="segConf" type="password" class="input" placeholder="Confirme a nova senha" />
+      <button id="btnTrocarSenha" class="btn primary">Alterar Senha</button>
+    </section>
+
+    <!-- USUÁRIOS -->
+    <section id="tab-usuarios" class="card tabpane">
+      <h2>Gerenciar Funcionários</h2>
+      <label class="label">Nome do Funcionário</label>
+      <input id="usNome" class="input" placeholder="Nome completo" />
+      <label class="label">Senha Inicial</label>
+      <input id="usSenha" class="input" placeholder="Senha para o funcionário" />
+      <button id="usAdd" class="btn success">＋ Adicionar Funcionário</button>
+
+      <hr class="divider">
+
+      <h2>Minha Conta</h2>
+      <div class="sheet">
+        <p><strong>Usuário atual:</strong> <span id="usrAtual">Administrador</span></p>
+        <div class="row">
+          <div class="kpi blue"><small>Total de Usuários</small><strong id="usrTot">0</strong></div>
+          <div class="kpi green"><small>Funcionários Ativos</small><strong id="usrAtivos">0</strong></div>
+          <div class="kpi violet"><small>Último Login</small><strong id="usrLogin">—</strong></div>
+        </div>
+      </div>
+      <div id="listaUsuarios" class="list"></div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+    }
+  </script>
+</body>
+</html>
